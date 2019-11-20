@@ -27,17 +27,22 @@ class PlayGame(ChessBoard):
 			move = input()
 			if move == 'quit':
 				break;
+			if len(move) != 4:
+				print()
+				print(str(move) + ' is an invalid move. Ex. Input: (e2e4)')
+				tryagain = True
+				continue
 			fr = move[0:2]
 			to = move[2:4]
 			fx = self.convertLetToNum(fr[0])
-			ty = self.convertLetToNum(to[0])
-			if fr[0] != None and to[0] != None:
+			tx = self.convertLetToNum(to[0])
+			if fx != None and tx != None:
 				piece = self.findPiece(fx, (int(fr[1]) - 1), self.turn)
 				if piece != None:
-					self.move(piece, ty, (int(to[1]) - 1))
+					self.move(piece, tx, (int(to[1])))
 					tryagain = False
 				else:
-					print('x from: ' + str(fx) + ' x to: ' + str(ty) + ' y from: ' + str(int(fr[1]) - 1) + " y to: " + str(int(to[1]) - 1))
+					print('x from: ' + str(fx) + ' x to: ' + str(tx) + ' y from: ' + str(int(fr[1]) - 1) + " y to: " + str(int(to[1]) - 1))
 					print('Invalid Piece to move try again: ' )
 					tryagain = True
 
@@ -47,10 +52,11 @@ class PlayGame(ChessBoard):
 		NOTE: might be more complicated later on with move restrictions and mapping
 		or create each piece has a spefic mapping
 		"""
-		self.board[piece.x][piece.y] = ' .'
-		self.board[x][y] = piece.display
+		newY = 8 - y
+		self.board[piece.x][(7 - piece.y)] = ' .'
+		self.board[x][newY] = piece.display
 		piece.x = x
-		piece.y = y
+		piece.y = 7 - newY
 
 	def valid(self, row, col):
 		"""
@@ -81,10 +87,10 @@ class PlayGame(ChessBoard):
 		Given a player symbol, returns the opponent's symbol, 'B' for black,
 		or 'W' for white.
 		"""
-		if player == 'B':
-			return 'W'
+		if player == 'b':
+			return 'w'
 		else:
-			return 'B'
+			return 'b'
 
 game = PlayGame()
 game.play()
