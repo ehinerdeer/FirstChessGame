@@ -57,6 +57,8 @@ class PlayGame(ChessBoard):
 		self.board[x][newY] = piece.display
 		piece.x = x
 		piece.y = 7 - newY
+		if piece.symbol == 'K':
+			print(piece.generateMoves())
 
 	def valid(self, row, col):
 		"""

@@ -1,5 +1,10 @@
 # This is the definitions for our Piece super Class and all pieces sub classes
 
+import random
+import copy
+import abc
+import math
+
 class Piece:
 	"""
 	Definition of a piece that all pieces will inherit each piece has the following:
@@ -10,29 +15,48 @@ class Piece:
 		self.x = x
 		self.y = y
 
+	def valid(self, row, col):
+		"""
+		Returns true if the given row and col represent a valid location on
+		the chess board.
+		"""
+		return row >= 0 and col >= 0 and row < 8 and col < 8
+
 class King(Piece):
 	def __init__(self, color, x, y):
 		super().__init__(color, x, y)
 		self.symbol = 'K'
 		self.display = self.color + self.symbol
+		self.value = 5
 
 	def generateMoves(self):
 		currX = self.x
 		currY = self.y
-		return [ (currX, currY - 1),
-				 (currX, currY + 1),
-				 (currX - 1, currY),
-				 (currX + 1, currY),
-				 (currX + 1, currY - 1),
-				 (currX + 1, currY + 1),
-				 (currX - 1, currY - 1),
-				 (currX - 1, currY + 1) ]
+		result = []
+		if self.valid(currX, currY - 1):
+			result.append((currX, currY - 1))
+		if self.valid(currX, currY + 1):
+			result.append((currX, currY + 1))
+		if self.valid(currX - 1, currY):
+			result.append((currX - 1, currY))
+		if self.valid(currX + 1, currY):
+			result.append((currX + 1, currY))
+		if self.valid(currX + 1, currY):
+			result.append((currX + 1, currY - 1))
+		if self.valid(currX + 1, currY + 1):
+			result.append((currX + 1, currY + 1))
+		if self.valid(currX - 1, currY - 1):
+			result.append((currX - 1, currY - 1))
+		if self.valid(currX - 1, currY + 1):
+			result.append((currX - 1, currY + 1))
+		return result
 
 class Queen(Piece):
 	def __init__(self, color, x, y):
 		super().__init__(color, x, y)
 		self.symbol = 'Q'
 		self.display = self.color + self.symbol
+		self.value = 9
 
 	def generateMoves(self):
 		currX = self.x
@@ -49,6 +73,7 @@ class Rook(Piece):
 		super().__init__(color, x, y)
 		self.symbol = 'R'
 		self.display = self.color + self.symbol
+		self.value = 5
 
 	def generateMoves(self):
 		currX = self.x
@@ -56,28 +81,44 @@ class Rook(Piece):
 		result = []
 		#Vertical Moves Only
 		for i in range(8 - currY):
-			result.append((currX, currY + i + 1))
-		for i in range(currY - 1):
-			result.append((currX, currY - i + 1))
+			newY = currY + i + 1
+			if self.valid(currX, newY):
+				result.append((currX, newY))
+		for i in range(currY):
+			newY = currY - i - 1
+			if self.valid(currX, newY):
+				result.append((currX, newY))
 		#Horizontal Moves Only
 		for i in range(8 - currX):
-			result.append((currX + i + 1, currY))
-		for i in range(currX - 1):
-			result.append((currX - i + 1, currY))
+			newX = currX + i + 1
+			if self.valid(newX, currY):
+				result.append((newX, currY))
+		for i in range(currX):
+			newX = currX - i - 1
+			if self.valid(newX, currY):
+				result.append((newX, currY))
 		return result
 
 	def queenMoves(currX, currY):
 		result = []
 		#Vertical Moves Only
 		for i in range(8 - currY):
-			result.append((currX, currY + i + 1))
-		for i in range(currY - 1):
-			result.append((currX, currY - i + 1))
+			newY = currY + i + 1
+			if self.valid(currX, newY):
+				result.append((currX, newY))
+		for i in range(currY):
+			newY = currY - i - 1
+			if self.valid(currX, newY):
+				result.append((currX, newY))
 		#Horizontal Moves Only
 		for i in range(8 - currX):
-			result.append((currX + i + 1, currY))
-		for i in range(currX - 1):
-			result.append((currX - i + 1, currY))
+			newX = currX + i + 1
+			if self.valid(newX, currY):
+				result.append((newX, currY))
+		for i in range(currX):
+			newX = currX - i - 1
+			if self.valid(newX, currY):
+				result.append((newX, currY))
 		return result
 
 class Bishop(Piece):
@@ -85,6 +126,7 @@ class Bishop(Piece):
 		super().__init__(color, x, y)
 		self.symbol = 'B'
 		self.display = self.color + self.symbol
+		self.value = 3
 
 	def generateMoves(self):
 		currX = self.x
@@ -99,6 +141,17 @@ class Knight(Piece):
 		super().__init__(color, x, y)
 		self.symbol = 'N'
 		self.display = self.color + self.symbol
+		self.value = 3
+
+	def generateMoves(self):
+		currX = self.x
+		currY = self.y
+		result = []
+		if self.valid(currX + 2, currY + 1)
+			result.append(currX + 2, currY + 1)
+		if self.valid(currX + 2, currY - 1)
+			result.append(currX + 2, currY - 1)
+		
 
 class Pawn(Piece):
 	def __init__(self, color, x, y):
@@ -106,6 +159,7 @@ class Pawn(Piece):
 		self.symbol = 'P'
 		self.display = self.color + self.symbol
 		self.hasMoved = False
+		self.value = 1
 
 	def generateMoves(self):
 		if self.hasMoved:
