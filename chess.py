@@ -58,7 +58,8 @@ class PlayGame(ChessBoard):
 		piece.x = x
 		piece.y = 7 - newY
 		if piece.symbol == 'K':
-			print(piece.generateMoves())
+			print(piece.generateMoves(self.pieces))
+			print("x " + str(piece.x)+ " y " + str(piece.y))
 
 	def valid(self, row, col):
 		"""
@@ -72,8 +73,8 @@ class PlayGame(ChessBoard):
 		Returns true if the given row and col represent a valid location on
 		the chess board and the piece at that location, None if not valid
 		"""
-		if self.valid(row,col) and board[row][col] != '.':
-			return board[row][col]
+		if self.valid(row,col) and board[col][row] != ' .':
+			return board[col][row]
 		else:
 			return None
 
